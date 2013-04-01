@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Making the Web Rock: Web Audio</title>
+
+		<meta name="description" content="Web Audio talk">
+		<meta name="author" content="Chris Wilson">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+    <section>
+        <h1>Making The Web Rock</h1>
+        <h2>Web Audio</h2>
+        <div>
+            <br>
+        </div>
+        <h3>
+            <a href="http://cwilso.com/">Chris Wilson</a> / <a href="http://twitter.com/cwilso">@cwilso</a>
+        </h3>
+        <h6>Google Chrome Developer Advocate</h6>
+    </section>
+    <section>
+        <h2>Why another audio API?</h2>
+<h4>We have &lt;audio&gt; already!</h4>
+        <div>
+            <br>
+        </div>
+    				<p>&lt;audio&gt; hides the steps of loading, decoding and playing</p>
+					<div style="margin: 10.0pt 25.0%;">
+					<pre>
+        <code>&lt;audio controls preload="auto" src="mysound.ogg"&gt; &lt;/audio&gt;</code>
+    </pre>
+    <code>
+        <code>
+</code>
+    </code>
+</div>
+</section>
+<section>
+    <h2>Web Audio provides:</h2>
+<div>
+    <br>
+</div>
+<div>
+<ul>
+						<li>
+<a href="http://chrome.angrybirds.com/">Precise timing</a> of lots of overlapping sounds 
+						</li>
+<li>An audio pipeline and routing system for effects and filters 
+						</li>
+<li>Hooks to visualize and manipulate audio data on the fly</li>
+					</ul>
+</div>
+
+</section>
+    <section>
+        <h2>DEMO</h2>
+        <div>
+            <a href="../Vocoder/index.html">Vocoder</a>
+        </div>
+    </section>
+    <section>
+        <h2>What is audio useful for, anyway?</h2>
+        <div>
+            <br>
+        </div>
+        <div>
+            <ul>
+                <li>Gaming</li>
+                <li>Interactive audio "markers"</li>
+                <li>Musical applications</li>
+                <li>Audio processing</li>
+            </ul>
+        </div>
+    </section>
+    <section>
+        <h2>Building Simple Game Audio is easy</h2>
+		<div>
+            <br>
+        </div>
+		<div>
+		    <ul>
+		        <li>Load audio files with XHR</li>
+		        <li>Tell Web Audio to decode them into buffers</li>
+		        <li>Create source node, point at buffer, and&nbsp;<code>
+		        <font color="#0099cc">start()</font>
+		        </code>!</li>
+		    </ul>
+		</div>
+        <div style="text-align: left;">
+            <br>
+        </div>
+        <div style="text-align: center;">Simple buffer <a href="http://gritsgame.appspot.com/">playing and sound management</a> is easy!</div>
+	</section>
+    <section>
+        <h2>Web Audio API is based on a graph</h2>
+        <div>
+            <br>
+        </div>
+        <div>TODO: draw a graph here, hyperlink it to webaudioplayground.appspot.com</div>
+    </section>
+    <section>
+        <h2>Web Audio minimizes glitching</h2>
+        <div>
+            <br>
+        </div>
+        <div>TODO: talk about scheduling, latency</div>
+    </section>
+    <section>
+        <h2>Simple Scheduling</h2>
+        <div>
+            <br>
+        </div>
+        <div>Not just about start( time )!</div>
+        <div>
+            <br>
+        </div>
+        <div>ANY AudioParam can be scheduled -</div>
+        <div>frequency, gain, detune, delayTime...</div>
+    </section>
+    <section>    <h2 style="font-style: normal; font-variant: normal;">Effects pipeline</h2>
+<div>
+    <br>
+</div>
+<div>
+    <ul>
+        <li>
+            <span style="text-align: center; letter-spacing: -0.02em;">Filtering</span>
+        </li>
+        <li>
+            <span style="text-align: center; letter-spacing: -0.02em;">Delay</span>
+        </li>
+        <li>
+            <span style="text-align: center; letter-spacing: -0.02em;">Compression</span>
+</li>
+<li>
+    <span style="text-align: center; letter-spacing: -0.02em;">Convolution</span>
+</li>
+<li>
+    <span style="text-align: center; letter-spacing: -0.02em;">Waveshaping</span>
+</li>
+<li style="text-align: center;">Positioning/Panning/Doppler</li>
+    </ul>
+</div>
+    
+    
+    
+
+</section>
+<section>
+    <h2>Advanced Game Audio...</h2>
+    <div>
+        <br>
+    </div>
+    <div>Would of course need these things&nbsp;</div>
+    <div>
+        <br>
+    </div>
+    <div>(although Angry Birds might not)</div>
+</section>
+<section>
+    <h2>Audio for Music Applications</h2>
+    <div>
+        <br>
+    </div>
+    <div>
+        <ul>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Waveform synthesis: oscillators</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Filtering</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Compression</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Envelopes</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Delays and delay effects</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Offline processing</span>
+                <br>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+    <h2>Audio Input</h2>
+    <div>Now we can get input too!</div>
+    <div>
+        <br>
+    </div>
+    <div>
+        <ul>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Recording</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Input-driven UX</span>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Instrument tuning</span>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Analysis</span>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+    <h2>DEMO</h2>
+    <div>
+        <a href="http://webaudiodemos.appspot.com/AudioRecorder/index.html">Audio recording</a>
+    </div>
+</section>
+<section>
+    <h2>Effects</h2>
+    <div>
+        <ul>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Filtering</span>
+                <br>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Delay</span>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Convolution</span>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+    <h2>DEMO</h2>
+    <div>
+        <a href="http://webaudiodemos.appspot.com/input/index.html">Audio Input Effects</a>
+    </div>
+</section>
+<section>
+    <h2>Scheduling in a complex world</h2>
+    <div>
+        <br>
+    </div>
+    <div>Showed scheduling earlier...</div>
+    <div>...but for dynamic rhythms, you need to combine web audio and system timing. &nbsp;See <a href="http://www.html5rocks.com/en/tutorials/audio/scheduling/">article</a>.</div>
+</section>
+<section>
+    <h2>DEMO</h2>
+    <div>
+        <a href="http://webaudiodemos.appspot.com/MIDIDrums/index.html">Drum Machine</a>
+    </div>
+</section>
+<section>
+    <h2>DEMO</h2>
+    <div>Building a <a href="http://webaudiodemos.appspot.com/midi-synth/index.html">Synthesizer</a> (<a href="http://webaudiodemos.appspot.com/SynthTemplate/index.html">template</a>)</div>
+</section>
+<section>
+    <h2>Integration</h2>
+    <div>Web Audio can also process &lt;audio&gt; streams <br>(and WebRTC, too!)</div>
+</section>
+<section>
+    <h2>DEMO</h2>
+    <div><a href="../Vocoder/index.html">Vocoder</a></div>
+    <div>(Analysis, Visualization)</div>
+</section>
+<section>
+    <h2>Controlling it All</h2>
+    <div>Web MIDI is a developing standard</div>
+    <div>
+        <br>
+    </div>
+    <div>This is not cheesy background music! &nbsp;</div>
+    <div>That's "Standard MIDI files."</div>
+    <div>
+        <br>
+    </div>
+    <div>MIDI lets you connect controllers, synthesizers and more</div>
+    <div>
+        <br>
+    </div>
+    <div>Not yet implemented... but there is a polyfill</div>
+    <div>
+        <br>
+    </div>
+</section>
+<section>
+    <h2>DEMO</h2>
+    <div>
+        <br>
+    </div>
+    <div>wubwubwub</div>
+</section>
+<section>
+    <h2>Web Audio on Mobile</h2>
+    <div>iOS Safari 6.0 has Web Audio (with some caveats)</div>
+    <div>Hard at work on Chrome for Android support</div>
+</section>
+<section>
+    <h2>FUTURE APp Opportunities</h2>
+    <div>
+        <ul>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Immersive gaming audio</span>
+            </li>
+            <li>
+                <span style="text-align: center; letter-spacing: -0.02em;">Audio feedback and input in app UX</span>
+            </li>
+            <li>
+                <span style="letter-spacing: -0.02em; text-align: center;">Music applications - from synthesis to DAW&nbsp;</span>
+                <br>
+            </li>
+            <li>
+                <span style="letter-spacing: -0.02em; text-align: center;">Easily integrated, high-quality interactive audio - “Sonification”</span>
+                <br>
+            </li>
+        </ul>
+    </div>
+</section>
+<section>
+    <h2>End</h2>
+    <div>
+        <br>
+    </div>
+    <div>Questions?</div>
+    <div>
+        <br>
+    </div>
+    <div>cwilso@google.com</div>
+    <div>@cwilso</div>
+    <div>+Chris Wilson</div>
+</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
