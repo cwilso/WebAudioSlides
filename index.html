@@ -43,50 +43,62 @@
             <br>
         </div>
         <h3>
-            <a href="http://cwilso.com/">Chris Wilson</a> / <a href="http://twitter.com/cwilso">@cwilso</a>
+            <a target="_new" href="http://cwilso.com/">Chris Wilson</a> / <a target="_new" href="http://twitter.com/cwilso">@cwilso</a>
         </h3>
         <h6>Google Chrome Developer Advocate</h6>
     </section>
     <section>
         <h2>Why another audio API?</h2>
-<h4>We have &lt;audio&gt; already!</h4>
+        <h4>We have &lt;audio&gt; already!</h4>
         <div>
             <br>
         </div>
-    				<p>&lt;audio&gt; hides the steps of loading, decoding and playing</p>
-					<div style="margin: 10.0pt 25.0%;">
-					<pre>
-        <code>&lt;audio controls preload="auto" src="mysound.ogg"&gt; &lt;/audio&gt;</code>
-    </pre>
-    <code>
-        <code>
-</code>
-    </code>
-</div>
-</section>
-<section>
-    <h2>Web Audio provides:</h2>
-<div>
-    <br>
-</div>
-<div>
-<ul>
-						<li>
-<a href="http://chrome.angrybirds.com/">Precise timing</a> of lots of overlapping sounds 
-						</li>
-<li>An audio pipeline and routing system for effects and filters 
-						</li>
-<li>Hooks to visualize and manipulate audio data on the fly</li>
-					</ul>
-</div>
+		<p>&lt;audio&gt; hides the steps of loading, decoding and playing</p>
+		<div style="margin: 10.0pt 25.0%;">
+			<pre>
+                <code>&lt;audio controls preload="auto" src="mysound.ogg"&gt; &lt;/audio&gt;</code>
+            </pre>
+        </div>
+    </section>
 
-</section>
+    <section>
+        <h2>Web Audio provides:</h2>
+        <div>
+            <br>
+        </div>
+        <div>
+            1) <a target="_new" href="http://chrome.angrybirds.com/">Precise timing</a> of lots of overlapping sounds
+        </div>
+    </section>
+
+    <section>
+        <h2>Web Audio provides:</h2>
+        <div>
+            <br>
+        </div>
+        <div>
+            2) An audio pipeline and routing system for effects and filters 
+        </div>
+    </section>
+
+    <section>
+        <h2>Web Audio provides:</h2>
+        <div>
+            <br>
+        </div>
+        <div>
+            3) Hooks to analyze and visualize audio data on the fly
+        </div>
+    </section>
+
     <section>
         <h2>DEMO</h2>
         <div>
-            <a href="../Vocoder/index.html">Vocoder</a>
+            <a target="_new" href="../Vocoder/index.html">Vocoder</a>
         </div>
+    <div>(Analysis, Filtering, Visualization)</div>
     </section>
+
     <section>
         <h2>What is audio useful for, anyway?</h2>
         <div>
@@ -95,14 +107,14 @@
         <div>
             <ul>
                 <li>Gaming</li>
-                <li>Interactive audio "markers"</li>
+                <li>App UX feedback</li>
                 <li>Musical applications</li>
                 <li>Audio processing</li>
             </ul>
         </div>
     </section>
     <section>
-        <h2>Building Simple Game Audio is easy</h2>
+        <h2>Building Simple App/Game Audio is easy</h2>
 		<div>
             <br>
         </div>
@@ -110,22 +122,52 @@
 		    <ul>
 		        <li>Load audio files with XHR</li>
 		        <li>Tell Web Audio to decode them into buffers</li>
-		        <li>Create source node, point at buffer, and&nbsp;<code>
-		        <font color="#0099cc">start()</font>
-		        </code>!</li>
+		        <li>Create source node, point at buffer, connect it</li>
+                <li>Call <code><font color="#0099cc">start()</font></code>!</li>
 		    </ul>
 		</div>
         <div style="text-align: left;">
             <br>
         </div>
-        <div style="text-align: center;">Simple buffer <a href="http://gritsgame.appspot.com/">playing and sound management</a> is easy!</div>
+        <div style="text-align: center;">Simple buffer <a target="_new" href="http://gritsgame.appspot.com/">playing and sound management</a> is easy!</div>
 	</section>
+
+    <section>
+        <h2>Loading and Playing a Sound</h2>
+        <div>
+            <br>
+        </div>
+        <pre>var myBuffer = null;
+var context = new AudioContext();  // prefix alert: webkitAudioContext!
+
+function loadDogSound(url) {
+    var request = new XMLHttpRequest();
+    request.open("GET", "dogBarking.mp3", true);
+    request.responseType = "arraybuffer";
+
+    request.onload = function() {
+        context.decodeAudioData(
+            request.response, function(buffer) {
+                myBuffer = buffer;  // buffer is now ready!
+           } ); }
+    request.send();
+}
+
+function playSound( buffer ) {
+    var sourceNode = audioContext.createBufferSource();
+    sourceNode.buffer = myBuffer;
+    sourceNode.connect( audioContext.destination );
+    sourceNode.start( 0 );
+}</pre>
+    </section>
+
+
     <section>
         <h2>Web Audio API is based on a graph</h2>
         <div>
             <br>
         </div>
-        <div>TODO: draw a graph here, hyperlink it to webaudioplayground.appspot.com</div>
+        <div><!--TODO: draw a graph here--><a target="_new" href="../../WebAudio/">webaudioplayground.appspot.com</a></div>
     </section>
     <section>
         <h2>Web Audio minimizes glitching</h2>
@@ -146,28 +188,38 @@
         <div>ANY AudioParam can be scheduled -</div>
         <div>frequency, gain, detune, delayTime...</div>
     </section>
-    <section>    <h2 style="font-style: normal; font-variant: normal;">Effects pipeline</h2>
+
+    <section>
+        <h2>Scheduling on AudioParams</h2>
+        <div>
+            <br>
+        </div>
+        <pre>interface AudioParam {  
+    attribute value; 
+
+    // Parameter automation
+    void setValueAtTime( value, time ); 
+    void linearRampToValueAtTime( value, time ); 
+    void exponentialRampToValueAtTime( value, time );  
+    void setTargetAtTime( targetValue, time, timeConstant );  
+    void setValueCurveAtTime( values, time, duration ); 
+    void cancelScheduledValues( startTime );  
+} </pre>
+    </section>
+
+    <section>
+        <h2>Effects in Web Audio</h2>
 <div>
     <br>
 </div>
 <div>
     <ul>
-        <li>
-            <span style="text-align: center; letter-spacing: -0.02em;">Filtering</span>
-        </li>
-        <li>
-            <span style="text-align: center; letter-spacing: -0.02em;">Delay</span>
-        </li>
-        <li>
-            <span style="text-align: center; letter-spacing: -0.02em;">Compression</span>
-</li>
-<li>
-    <span style="text-align: center; letter-spacing: -0.02em;">Convolution</span>
-</li>
-<li>
-    <span style="text-align: center; letter-spacing: -0.02em;">Waveshaping</span>
-</li>
-<li style="text-align: center;">Positioning/Panning/Doppler</li>
+        <li>Filtering</li>
+        <li>Delay</li>
+        <li>Compression</li>
+        <li>Convolution</li>
+        <li>Waveshaping</li>
+        <li>Positioning/Panning/Doppler</li>
     </ul>
 </div>
     
@@ -180,7 +232,7 @@
     <div>
         <br>
     </div>
-    <div>Would of course need these things&nbsp;</div>
+    <div>...would of course need these things</div>
     <div>
         <br>
     </div>
@@ -193,33 +245,16 @@
     </div>
     <div>
         <ul>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Waveform synthesis: oscillators</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Filtering</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Compression</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Envelopes</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Delays and delay effects</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Offline processing</span>
-                <br>
-            </li>
+            <li>Waveform synthesis: oscillators</li>
+            <li>Filtering</li>
+            <li>Compression</li>
+            <li>Envelopes</li>
+            <li>Delays and delay effects</li>
+            <li>Offline processing</li>
         </ul>
     </div>
 </section>
+
 <section>
     <h2>Audio Input</h2>
     <div>Now we can get input too!</div>
@@ -228,81 +263,53 @@
     </div>
     <div>
         <ul>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Recording</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Input-driven UX</span>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Instrument tuning</span>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Analysis</span>
-            </li>
+            <li><a target="_new" href="../AudioRecorder/index.html">Recording</a></li>
+            <li>Input-driven UX</li>
+            <li><a target="_new" href="../pitchdetect/index.html">Instrument tuning</a></li>
+            <li>Analysis</li>
         </ul>
     </div>
 </section>
+
 <section>
     <h2>DEMO</h2>
+    <h4>(you really need headphones for this one, sorry...)</h4>
     <div>
-        <a href="http://webaudiodemos.appspot.com/AudioRecorder/index.html">Audio recording</a>
+        <a target="_new" href="http://webaudiodemos.appspot.com/input/index.html">Audio Input Effects</a>
     </div>
 </section>
-<section>
-    <h2>Effects</h2>
-    <div>
-        <ul>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Filtering</span>
-                <br>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Delay</span>
-            </li>
-            <li>
-                <span style="text-align: center; letter-spacing: -0.02em;">Convolution</span>
-            </li>
-        </ul>
-    </div>
-</section>
-<section>
-    <h2>DEMO</h2>
-    <div>
-        <a href="http://webaudiodemos.appspot.com/input/index.html">Audio Input Effects</a>
-    </div>
-</section>
+
 <section>
     <h2>Scheduling in a complex world</h2>
     <div>
         <br>
     </div>
     <div>Showed scheduling earlier...</div>
-    <div>...but for dynamic rhythms, you need to combine web audio and system timing. &nbsp;See <a href="http://www.html5rocks.com/en/tutorials/audio/scheduling/">article</a>.</div>
+    <div>...but for dynamic rhythms, you need to combine web audio and system timing. See <a target="_new" href="http://www.html5rocks.com/en/tutorials/audio/scheduling/">article</a>.</div>
 </section>
 <section>
     <h2>DEMO</h2>
     <div>
-        <a href="http://webaudiodemos.appspot.com/MIDIDrums/index.html">Drum Machine</a>
+        <a target="_new" href="../MIDIDrums/index.html">Drum Machine</a>
     </div>
 </section>
 <section>
     <h2>DEMO</h2>
-    <div>Building a <a href="http://webaudiodemos.appspot.com/midi-synth/index.html">Synthesizer</a> (<a href="http://webaudiodemos.appspot.com/SynthTemplate/index.html">template</a>)</div>
+    <div>Building a <a target="_new" href="../midi-synth/index.html">Synthesizer</a> (<a target="_new" href="http://webaudiodemos.appspot.com/SynthTemplate/index.html">template</a>)</div>
 </section>
 <section>
     <h2>Integration</h2>
     <div>Web Audio can also process &lt;audio&gt; streams <br>(and WebRTC, too!)</div>
 </section>
 <section>
-    <h2>DEMO</h2>
-    <div><a href="../Vocoder/index.html">Vocoder</a></div>
-    <div>(Analysis, Visualization)</div>
+    <h2>Controlling it All</h2>
+    <div>
+        <br>
+    </div>
+    <div>MIDI</div>
 </section>
 <section>
-    <h2>Controlling it All</h2>
-    <div>Web MIDI is a developing standard</div>
+    <h2>Web MIDI</h2>
     <div>
         <br>
     </div>
@@ -311,21 +318,21 @@
     <div>
         <br>
     </div>
-    <div>MIDI lets you connect controllers, synthesizers and more</div>
+    <div>MIDI lets you connect controllers, synthesizers and more to your computer.</div>
+</section>
+<section>
+    <h2>Web MIDI API</h2>
     <div>
         <br>
     </div>
-    <div>Not yet implemented... but there is a polyfill</div>
-    <div>
-        <br>
-    </div>
+    <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - not yet implemented, but there is a <a href="http://github.com/cwilso/WebMIDIAPIShim/">prollyfill.</a> Ping me directly if you're interested.</div>
 </section>
 <section>
     <h2>DEMO</h2>
     <div>
         <br>
     </div>
-    <div>wubwubwub</div>
+    <div><a target="_new_" href="../wubwubwub/index.html">wubwubwub</a></div>
 </section>
 <section>
     <h2>Web Audio on Mobile</h2>
@@ -333,7 +340,7 @@
     <div>Hard at work on Chrome for Android support</div>
 </section>
 <section>
-    <h2>FUTURE APp Opportunities</h2>
+    <h2>FUTURE App Opportunities</h2>
     <div>
         <ul>
             <li>
@@ -364,8 +371,31 @@
     </div>
     <div>cwilso@google.com</div>
     <div>@cwilso</div>
+    <div><a href="http://github.com/cwilso">github.com/cwilso</a></div>
+    <div><a href="http://webaudiodemos.appspot.com/">webaudiodemos.appspot.com</a></div>
     <div>+Chris Wilson</div>
+    <div>These slides:<a href="http://webaudiodemos.appspot.com/slides/index.html">goo.gl/iCsRY</a></div>
 </section>
+
+<section>
+    <h2>Other Awesome (Online) Demos...</h2>
+</section>
+
+<section>
+    <h2>DinahMoe's Tuna</h2>
+    <div>
+        <a target="_new" href="https://github.com/Dinahmoe/tuna"><img src="tuna.jpg"></a>
+    </div>
+</section>
+
+<section>
+    <h2>DinahMoe's JAM with Chrome</h2>
+    <div>
+        <a href="http://www.dinahmoe.com/?projects=jam-with-chrome"><img src="http://www.dinahmoe.com/wp-content/uploads/2012/11/jam_1.png" alt="Jam with Chrome" width="580" height="399"></a>
+    </div>
+</section>
+
+
 
 			</div>
 
