@@ -65,7 +65,7 @@
         <div>
             <br>
         </div>
-            <audio controls src="bass.ogg"></audio>
+            <audio controls src="glass-hit.ogg"></audio>
     </section>
 
     <section>
@@ -145,18 +145,17 @@
             <br>
         </div>
         <pre>var myBuffer = null;
-var context = new AudioContext();  // webkit prefix alert!
+var context = new AudioContext(); // webkit prefix alert!
 
 function loadDogSound(url) {
     var request = new XMLHttpRequest();
     request.open("GET", "dogBarking.mp3", true);
     request.responseType = "arraybuffer";
     request.onload = function() {
-        context.decodeAudioData( request.response, 
-        	function(buffer) { myBuffer = buffer;  } ); }
+    context.decodeAudioData( request.response, 
+        function(buffer) { myBuffer = buffer;  } ); }
     request.send();
 }
-
 function playSound( buffer ) {
     var sourceNode = audioContext.createBufferSource();
     sourceNode.buffer = myBuffer;
@@ -189,9 +188,9 @@ function playSound( buffer ) {
     <div>
 		<pre>function playEverySecondForTenSeconds( myBuffer ) {
     for (var i=0; i&lt;10; i++) {
-        var sourceNode = audioContext.createBufferSource();
+        var sourceNode = context.createBufferSource();
         sourceNode.buffer = myBuffer;
-        sourceNode.connect( audioContext.destination );
+        sourceNode.connect( context.destination );
         sourceNode.start( context.now + i );
     }
 }</pre>
@@ -239,7 +238,7 @@ function playSound( buffer ) {
     void setValueAtTime( value, time ); 
     void linearRampToValueAtTime( value, time ); 
     void exponentialRampToValueAtTime( value, time );  
-    void setTargetAtTime( targetValue, time, timeConstant );  
+    void setTargetAtTime( target, time, timeConstant );  
     void setValueCurveAtTime( values, time, duration ); 
     void cancelScheduledValues( startTime );  
 } </pre>
@@ -258,8 +257,8 @@ var now = context.currentTime;
 envelope.gain.setValueAtTime( 0, now );
 envelope.gain.linearRampToValueAtTime( 1.0, now + 2.0 );
 envelope.gain.linearRampToValueAtTime( 0.0, now + 4.0 );
-mySoundNode.start(0);
- </pre>
+
+mySoundNode.start(0);</pre>
     </section>
 
     <section>
@@ -329,7 +328,7 @@ mySoundNode.start(0);
         <h2>DEMO</h2>
         <h4>(you really need headphones for this one, sorry...)</h4>
         <div>
-            <a target="_input" href="http://webaudiodemos.appspot.com/input/index.html">Audio Input Effects</a>
+            <a target="_input" href="../input/index.html">Audio Input Effects</a>
         </div>
     </section>
 
