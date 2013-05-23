@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Making the Web Rock: Web Audio Demo Reel</title>
+
+		<meta name="description" content="Web Audio demos">
+		<meta name="author" content="Chris Wilson">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		<style>
+		pre { font-size: 24px !important; line-height: 1.3 !important;}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+    <section>
+        <h1>Making The Web Rock</h1>
+        <h2>Web Audio Demo Reel</h2>
+        <div>
+            <br>
+        </div>
+        <h3>
+            <a target="_new" href="http://cwilso.com/">Chris Wilson</a> / <a target="_new" href="http://twitter.com/cwilso">@cwilso</a>
+        </h3>
+        <h6>Google Chrome Developer Advocate</h6>
+    </section>
+    <section>
+        <h2>What is the Web Audio API?</h2>
+<br>
+        <h3>It's an API in HTML5 that enables:</h3>
+        <ul>
+            <li>Precisely controlled playback of <b>lots</b> of overlapping sounds</li>
+            <li>An audio pipeline/routing system for built-in low-level DSP</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>DEMO: Timing and playback of sounds</h2>
+        <br>
+        <h3><a target="_drums" href="../MIDIDrums/index.html">Drum Machine</a></h3>
+        <br>
+        <p><i>These demos don't use Flash or plugins - they're native in HTML!</i></p>
+    </section>
+
+    <section>
+        <h2>Effects in Web Audio</h2>
+        <div>
+            <br>
+        </div>
+        <div>
+            <ul>
+                <li>Filtering</li>
+                <li>Delay</li>
+                <li>Compression</li>
+                <li>Convolution</li>
+                <li>Waveshaping</li>
+                <li>Positioning/Panning/Doppler</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Advanced Effects...</h2>
+        <div>Most "musical effects" are more complex than <br>just a single filter or delay.</div>
+        <div>
+            <br>
+        </div>
+        <div>AudioParams can also be driven by audio-rate signals - <br>
+            a chorus effect is just an oscillator changing delayTime!</div>
+        <div>
+    </section>
+
+    <section>
+        <h2>DEMO</h2>
+        <div><a target="_synth" href="../midi-synth/index.html">Synthesizer</a></div>
+    </section>
+
+    <section>
+        <h2>Audio Input Demos</h2>
+        <h4>(best with headphones or non-mic input)</h4>
+        <div>
+            <a target="_input" href="../input/index.html">Audio Input Effects</a><br>
+            <a target="_vocoder" href="../Vocoder/index.html">Vocoder</a>
+        </div>
+    </section>
+
+    <section>
+        <h2>Web MIDI API</h2>
+        <div>
+            <br>
+        </div>
+        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - implementation underway in Chrome.  Demand from your browser.  :)</div>
+    </section>
+
+    <section>
+        <h2>DEMO</h2>
+        <div>
+            <br>
+        </div>
+        <div><a target="_wubwubwub_" href="../wubwubwub/index.html">wubwubwub</a></div>
+    </section>
+
+    <section>
+        <h2>End</h2>
+        <div>
+            <br>
+        </div>
+        <div>Questions?</div>
+        <div>
+            <br>
+        </div>
+        <div>cwilso@google.com</div>
+        <div>@cwilso</div>
+        <div><a href="http://github.com/cwilso">github.com/cwilso</a></div>
+        <div><a href="http://webaudiodemos.appspot.com/">webaudiodemos.appspot.com</a></div>
+        <div>+Chris Wilson</div>
+        <div>These slides:<a href="http://webaudiodemos.appspot.com/slides/demos.html">http://webaudiodemos.appspot.com/slides/demos.html</a></div>
+    </section>
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
