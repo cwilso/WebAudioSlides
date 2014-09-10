@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Making the Web Rock: Web MIDI</title>
+
+		<meta name="description" content="Web MIDI talk">
+		<meta name="author" content="Chris Wilson">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+		<style>
+		pre { font-size: 24px !important; line-height: 1.3 !important;}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+    <section>
+        <h1>Making The Web Rock</h1>
+        <h2>Web MIDI</h2>
+        <div>
+            <br>
+        </div>
+        <h3>
+            <a target="_new" href="http://google.com/+ChrisWilson">+ChrisWilson</a> / <a target="_new" href="http://twitter.com/cwilso">@cwilso</a>
+        </h3>
+        <h6>Google Chrome Developer Advocate</h6>
+    </section>
+
+    <section>
+        <h2>Controlling it All</h2>
+        <div>
+            <br>
+        </div>
+        <div>Web MIDI : <a href="http://webaudio.github.io/web-midi-api/">webaudio.github.io/web-midi-api/</a></div>
+    </section>
+    <section>
+        <h2>Web MIDI</h2>
+        <div>
+            <br>
+        </div>
+        <div>This is not cheesy background music! &nbsp;</div>
+        <div>That's "Standard MIDI files."</div>
+        <div>
+            <br>
+        </div>
+        <div>MIDI lets you connect controllers, synthesizers and more to your computer.</div>
+    </section>
+
+    <section>
+        <h2>Web MIDI API</h2>
+        <div>
+            <br>
+        </div>
+        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - Only implemented in Chrome under flag, but I wrote a cross-browser plugin-based <a href="http://github.com/cwilso/WebMIDIAPIShim/">prollyfill.</a></div>
+    </section>
+
+
+    <section>
+        <h2>DEMO</h2>
+        <div><br></div>
+        <div>Building a <a target="_synth" href="../midi-synth/index.html">Synthesizer</a></div>
+    </section>
+
+    <section>
+        <h2>Asking for MIDI devices</h2>
+        <div>
+            <br>
+        </div>
+        <pre>window.addEventListener('load', function() {   
+  navigator.requestMIDIAccess().then( 
+    onMIDIInit, 
+    onMIDISystemError );
+});</pre>
+    </section>
+
+    <section>
+        <h2>Enumerating MIDI output devices</h2>
+        <h3>(old style! Soon to stop working!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  var list=midi.outputs();
+
+  if (list.length) {
+    for (var i=0; i&lt;list.length; i++) {
+      midiOut = list[ preferredIndex ];
+      midiOut.send( [0x90, 3, 32] );
+    }
+  }
+}</pre>
+    </section>
+
+    <section>
+        <h2>MIDI Message syntax</h2>
+        <div><br></div>
+        <div>MIDI as 16 virtual channels, blah blah blah.</div>
+        <br>
+        <div>MIDI spec:<br>
+        <a href="http://www.midi.org/techspecs/midimessages.php">
+        http://www.midi.org/techspecs/midimessages.php</a></div>
+        <br><div>MIDI note numbers: <br>
+        <a href="http://www.phys.unsw.edu.au/jw/notes.html">
+        http://www.phys.unsw.edu.au/jw/notes.html</a></div>
+    </section>
+
+    <section>
+        <h2>Enumerating MIDI input devices</h2>
+        <h3>(old style! Soon to stop working!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  var list=midi.inputs();
+
+  if (list.length) {
+    for (var i=0; i&lt;list.length; i++) {
+      var midiIn = list[ i ];
+      midiIn.onmidimessage = midiMessageReceived;
+    }
+  }
+}</pre>
+    </section>
+
+    <section>
+        <h2>Parsing MIDI messages</h2>
+        <div>
+            <br>
+        </div>
+        <pre>function midiMessageReceived( ev ) {
+    var cmd = ev.data[0] >> 4;
+    var channel = ev.data[0] &amp; 0xf;
+    var noteNumber = ev.data[1];
+    var velocity = 0;
+    if (ev.data.length > 2)
+      velocity = ev.data[2];
+
+    // MIDI noteon with velocity=0 is the same as noteoff
+    if ( cmd==8 || ((cmd==9)&amp;&amp;(velocity==0)) ) { // noteoff
+      noteOff( noteNumber );
+    } else if (cmd == 9) { // note on
+      noteOn( noteNumber, velocity);
+    } else if (cmd == 11) { // controller message
+      controller( noteNumber, velocity);
+    } else {
+      // probably sysex!
+    }
+}</pre>
+    </section>
+
+    <section>
+        <h2>DEMO</h2>
+        <div><br></div>
+        <div>Spinning the discs - <a target="_wubwubwub_" href="../wubwubwub/index.html">wubwubwub</a></div>
+    </section>
+
+    <section>
+        <h2>Web MIDI</h2>
+        <div>Implemented in Chrome under flag #enable-web-midi</div>
+        <div>Works on Android Chrome with USB OTG! </div>
+    </section>
+
+    <section>
+        <h2>App Opportunities</h2>
+        <div>
+            <ul>
+                <li>
+                    <span style="text-align: center; letter-spacing: -0.02em;">Software synthesizers</span>
+                </li>
+                <li>
+                    <span style="letter-spacing: -0.02em; text-align: center;">DAWs</span>
+                    <br>
+                </li>
+                <li>
+                    <span style="letter-spacing: -0.02em; text-align: center;">DJ apps</span>
+                    <br>
+                </li>
+                <li>
+                    <span style="letter-spacing: -0.02em; text-align: center;">Physical controllers for non-music apps</span>
+                    <br>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <section>
+        <h2>End</h2>
+        <div>
+            <br>
+        </div>
+        <div>Questions?</div>
+        <div>
+            <br>
+        </div>
+        <div>cwilso@google.com</div>
+        <div>@cwilso</div>
+        <div><a href="http://github.com/cwilso">github.com/cwilso</a></div>
+        <div><a href="http://webaudiodemos.appspot.com/">webaudiodemos.appspot.com</a></div>
+        <div>+Chris Wilson</div>
+        <div>These slides:<a href="http://webaudiodemos.appspot.com/slides/index.html">goo.gl/iCsRY</a></div>
+    </section>
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

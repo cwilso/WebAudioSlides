@@ -170,7 +170,7 @@ function playSound( buffer ) {
         <div>
             <br>
         </div>
-        <div><!--TODO: draw a graph here--><a target="_playground" href="../../WebAudio/">webaudioplayground.appspot.com</a></div>
+        <div><!--TODO: draw a graph here--><a target="_playground" href="../../WebAudioPlayground/">webaudioplayground.appspot.com</a></div>
     </section>
 
     <section>
@@ -268,12 +268,13 @@ mySoundNode.start(0);</pre>
 		</div>
 		<div>
 		    <ul>
-		        <li>Filtering</li>
+		        <li>Biquad Filtering - lowpass, hipass, etc.</li>
 		        <li>Delay</li>
 		        <li>Compression</li>
 		        <li>Convolution</li>
 		        <li>Waveshaping</li>
 		        <li>Positioning/Panning/Doppler</li>
+                <li>Custom Javascript processing*</li>
 		    </ul>
 		</div>
 	</section>
@@ -326,7 +327,7 @@ mySoundNode.start(0);</pre>
 
     <section>
         <h2>DEMO</h2>
-        <h4>(you really need headphones for this one, sorry...)</h4>
+        <h4>(you may need headphones for this one, sorry...)</h4>
         <div>
             <a target="_input" href="../input/index.html">Audio Input Effects</a>
         </div>
@@ -349,8 +350,16 @@ mySoundNode.start(0);</pre>
 	</section>
 
     <section>
+        <h2>What's NOT there (yet) for web audio</h2>
+        <ul>
+        <li>Any kind of plugin/VSTi hooks
+        <li>Multi-interface hooks<br>(multi-channel, yes; multi-device, no.)
+        </ul>
+    </section>
+
+    <section>
         <h2>DEMO</h2>
-        <div>Building a <a target="_synth" href="../midi-synth/index.html">Synthesizer</a> (<a target="_synthtemp" href="http://webaudiodemos.appspot.com/SynthTemplate/index.html">template</a>)</div>
+        <div>Building a <a target="_synth" href="../midi-synth/index.html">Synthesizer</a></div>
     </section>
 
     <section>
@@ -358,7 +367,8 @@ mySoundNode.start(0);</pre>
         <div>
             <br>
         </div>
-        <div>MIDI</div>
+        <div>Web MIDI : <a href="http://webaudio.github.io/web-midi-api/">webaudio.github.io/web-midi-api/</a></div>
+        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - Only implemented in Chrome under flag, but I wrote a cross-browser plugin-based <a href="http://github.com/cwilso/WebMIDIAPIShim/">prollyfill.</a></div>
     </section>
     <section>
         <h2>Web MIDI</h2>
@@ -372,35 +382,166 @@ mySoundNode.start(0);</pre>
         </div>
         <div>MIDI lets you connect controllers, synthesizers and more to your computer.</div>
     </section>
+
     <section>
-        <h2>Web MIDI API</h2>
+        <h2>CODE</h2>
+        <div><br></div>
+        <div>So how did I hook up that <a target="_synth" href="../midi-synth/index.html">synthesizer</a>?</div>
+    </section>
+
+    <section>
+        <h2>Asking for MIDI devices</h2>
         <div>
             <br>
         </div>
-        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - not yet implemented, but there is a <a href="http://github.com/cwilso/WebMIDIAPIShim/">prollyfill.</a> Ping me directly if you're interested.</div>
+        <pre>window.addEventListener('load', function() {   
+  navigator.requestMIDIAccess().then( 
+    onMIDIInit, 
+    onMIDISystemError );
+});</pre>
     </section>
+
+    <section>
+        <h2>Enumerating MIDI output devices</h2>
+        <h3>(old style! Soon to stop working!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  var list=midi.outputs();
+
+  for (var i=0; i&lt;list.length; i++) {
+    list[i].send( [0x90, 3, 32] );
+  }
+}</pre>
+    </section>
+
+    <section>
+        <h2>Enumerating MIDI output devices</h2>
+        <h3>(New style! Use this!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  for (var input of midiAccess.outputs.values())
+    input.send( [0x90, 3, 32] );
+}
+
+
+
+</pre>
+    </section>
+
+    <section>
+        <h2>MIDI Message syntax</h2>
+        <div><br></div>
+        <div>MIDI has 16 virtual channels, blah blah blah.</div>
+        <br>
+        <div>MIDI spec:<br>
+        <a href="http://www.midi.org/techspecs/midimessages.php">
+        http://www.midi.org/techspecs/midimessages.php</a></div>
+        <br><div>MIDI note numbers: <br>
+        <a href="http://www.phys.unsw.edu.au/jw/notes.html">
+        http://www.phys.unsw.edu.au/jw/notes.html</a></div>
+    </section>
+
+    <section>
+        <h2>Enumerating MIDI input devices</h2>
+        <h3>(Old style! Soon to stop working!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  var list=midi.inputs();
+
+  for (var i=0; i&lt;list.length; i++)
+    list[ i ].onmidimessage = midiMessageReceived;
+}</pre>
+    </section>
+
+    <section>
+        <h2>Enumerating MIDI input devices</h2>
+        <h3>(New style! Use this!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  for (var input of midiAccess.inputs.values())
+    input.onmidimessage = midiMessageReceived;
+}
+
+
+</pre>
+    </section>
+
+    <section>
+        <h2>Parsing MIDI messages</h2>
+        <div>
+            <br>
+        </div>
+        <pre>function midiMessageReceived( ev ) {
+    var cmd = ev.data[0] >> 4;
+    var channel = ev.data[0] &amp; 0xf;
+    var noteNumber = ev.data[1];
+    var velocity = 0;
+    if (ev.data.length > 2)
+      velocity = ev.data[2];
+
+    // MIDI noteon with velocity=0 is the same as noteoff
+    if ( cmd==8 || ((cmd==9)&amp;&amp;(velocity==0)) ) { // noteoff
+      noteOff( noteNumber );
+    } else if (cmd == 9) { // note on
+      noteOn( noteNumber, velocity);
+    } else if (cmd == 11) { // controller message
+      controller( noteNumber, velocity);
+    } else {
+      // probably sysex!
+    }
+}</pre>
+    </section>
+
     <section>
         <h2>DEMO</h2>
-        <div>
-            <br>
-        </div>
-        <div><a target="_wubwubwub_" href="../wubwubwub/index.html">wubwubwub</a></div>
+        <div><br></div>
+        <div>Spinning the discs - <a target="_wubwubwub_" href="../wubwubwub/index.html">wubwubwub</a></div>
     </section>
 
     <section>
-        <h2>Web Audio on Desktop</h2>
-        <div>Safari and Chrome (soon Opera? :)</div>
-        <div>Firefox hard at work!  Check out nightly builds, great stuff.</div>
+        <h2>Web MIDI support</h2>
+        <div>Implemented in Chrome under flag #enable-web-midi</div>
+        <div>Works on Android Chrome with USB OTG! </div>
+        <div>Firefox has expressed interest</div>
     </section>
 
     <section>
-        <h2>Web Audio on Mobile</h2>
+        <h2>Web Audio Support on Desktop</h2>
+        <div>Chrome, Safari, Firefox</div>
+        <div><a href="http://status.modern.ie/webaudioapi">IE is implementing!!</a></div>
+    </section>
+
+    <section>
+        <h2>Web Audio Support on Mobile</h2>
+        <div>Chrome for Android has support (higher latency)</div>
         <div>iOS Safari 6.0 has Web Audio (with some caveats)</div>
-        <div>Hard at work on Chrome for Android support</div>
+        <div>FFOS</div>
     </section>
 
     <section>
-        <h2>FUTURE App Opportunities</h2>
+        <h2>Other Demos</h2>
+        <ul>
+        <li>Soundtrap (DAW): <a href="https://www.soundtrap.com/">https://www.soundtrap.com/</a>
+        <li>Audio Looper: <a target="_looperjs" href="https://github.com/lautr3k/Looper.js">https://github.com/lautr3k/Looper.js</a>
+        <li>Yamaha's Web Music Platform OS project: <a href="yamaha-webmusic.github.io/webmusicplatform/app/">yamaha-webmusic.github.io/webmusicplatform/app/</a>
+        <li>Noteflight (notation): <a target="_noteflight" href="http://noteflight.com/"
+        <li>Yamaha's NSX1 apps: <a href="yamaha-webmusic.github.io">yamaha-webmusic.github.io</a>
+        <li>Synth setups<a  target="_hya" href="http://app.hya.io/">http://app.hya.io/</a>
+        <li>Drawing a waveform: <a target="_waviator" href="http://milesofdata.com/waviator/">http://milesofdata.com/waviator/</a>
+        <li>Visualization: <a target="_spirals" href="http://tomasgonzalezvivo.com/soundspirals/">http://tomasgonzalezvivo.com/soundspirals/</a>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Future App Opportunities</h2>
         <div>
             <ul>
                 <li>
@@ -413,13 +554,20 @@ mySoundNode.start(0);</pre>
                     <span style="letter-spacing: -0.02em; text-align: center;">Music applications - from synthesis to DAW&nbsp;</span>
                     <br>
                 </li>
-                <li>
-                    <span style="letter-spacing: -0.02em; text-align: center;">Easily integrated, high-quality interactive audio - “Sonification”</span>
-                    <br>
-                </li>
             </ul>
         </div>
     </section>
+
+
+<section>
+        <h2>What I want from you:</h2>
+        <ul>
+        <li>Investigate/play around/build awesome stuff
+        <li>Tell us what's not there
+        <li>Help us prioritize to make the web platform awesome for audio apps!
+        </ul>
+        </section>
+
     <section>
         <h2>End</h2>
         <div>
@@ -435,32 +583,6 @@ mySoundNode.start(0);</pre>
         <div><a href="http://webaudiodemos.appspot.com/">webaudiodemos.appspot.com</a></div>
         <div>+Chris Wilson</div>
         <div>These slides:<a href="http://webaudiodemos.appspot.com/slides/index.html">goo.gl/iCsRY</a></div>
-    </section>
-
-    <section>
-        <h2>Other Awesome (Online) Demos...</h2>
-        <div>
-            <ul>
-                <li>DinahMoe's <a href="http://www.dinahmoe.com/?projects=tonecraft-a-chrome-web-audio-api-experiment-by-dinahmoe">ToneCraft</a></li>
-                <li>DinahMoe's <a href="http://www.dinahmoe.com/?projects=plink-by-dinahmoe-web-audio-api">Plink</a></li>
-                <li>Stuart Memo's <a href="http://stuartmemo.com/">awesome stuff...</a></li>
-                <li><a href="http://www.g200kg.com/websequencer/">WebSequencer</a> - audio/MIDI community in Japan</li>
-            </ul>
-        </div>
-    </section>
-
-    <section>
-        <h2>DinahMoe's JAM with Chrome</h2>
-        <div>
-            <a href="http://www.dinahmoe.com/?projects=jam-with-chrome"><img src="http://www.dinahmoe.com/wp-content/uploads/2012/11/jam_1.png" alt="Jam with Chrome" width="580" height="399"></a>
-        </div>
-    </section>
-
-    <section>
-        <h2>DinahMoe's Tuna</h2>
-        <div>
-            <a target="_new" href="https://github.com/Dinahmoe/tuna"><img src="tuna.jpg"></a>
-        </div>
     </section>
 
 
