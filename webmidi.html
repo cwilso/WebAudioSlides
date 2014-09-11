@@ -49,6 +49,12 @@
             <a target="_new" href="http://google.com/+ChrisWilson">+ChrisWilson</a> / <a target="_new" href="http://twitter.com/cwilso">@cwilso</a>
         </h3>
         <h6>Google Chrome Developer Advocate</h6>
+        <h6>Web Audio/Web MIDI co-editor</h6>
+    </section>
+
+    <section>
+        <h2>DEMO</h2>
+        <div><a target="_synth" href="../midi-synth/index.html">Synthesizer</a></div>
     </section>
 
     <section>
@@ -57,6 +63,7 @@
             <br>
         </div>
         <div>Web MIDI : <a href="http://webaudio.github.io/web-midi-api/">webaudio.github.io/web-midi-api/</a></div>
+        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - Only implemented in Chrome under a flag, but I wrote a cross-browser plugin-based <a href="http://github.com/cwilso/WebMIDIAPIShim/">polyfill.</a></div>
     </section>
     <section>
         <h2>Web MIDI</h2>
@@ -72,18 +79,16 @@
     </section>
 
     <section>
-        <h2>Web MIDI API</h2>
+        <h2>DEMO</h2>
         <div>
-            <br>
+            <a target="_drums" href="../MIDIDrums/index.html">Drum Machine</a>
         </div>
-        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - Only implemented in Chrome under flag, but I wrote a cross-browser plugin-based <a href="http://github.com/cwilso/WebMIDIAPIShim/">prollyfill.</a></div>
     </section>
 
-
     <section>
-        <h2>DEMO</h2>
+        <h2>CODE</h2>
         <div><br></div>
-        <div>Building a <a target="_synth" href="../midi-synth/index.html">Synthesizer</a></div>
+        <div>So how did I hook up that <a target="_synth" href="../midi-synth/index.html">synthesizer</a>?</div>
     </section>
 
     <section>
@@ -107,19 +112,32 @@
         <pre>function onMIDIInit( midi ) {
   var list=midi.outputs();
 
-  if (list.length) {
-    for (var i=0; i&lt;list.length; i++) {
-      midiOut = list[ preferredIndex ];
-      midiOut.send( [0x90, 3, 32] );
-    }
+  for (var i=0; i&lt;list.length; i++) {
+    list[i].send( [0x90, 3, 32] );
   }
 }</pre>
     </section>
 
     <section>
+        <h2>Enumerating MIDI output devices</h2>
+        <h3>(New style! Use this!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  for (var input of midiAccess.outputs.values())
+    input.send( [0x90, 3, 32] );
+}
+
+
+
+</pre>
+    </section>
+
+    <section>
         <h2>MIDI Message syntax</h2>
         <div><br></div>
-        <div>MIDI as 16 virtual channels, blah blah blah.</div>
+        <div>MIDI has 16 virtual channels, blah blah blah.</div>
         <br>
         <div>MIDI spec:<br>
         <a href="http://www.midi.org/techspecs/midimessages.php">
@@ -131,20 +149,31 @@
 
     <section>
         <h2>Enumerating MIDI input devices</h2>
-        <h3>(old style! Soon to stop working!)</h3>
+        <h3>(Old style! Soon to stop working!)</h3>
         <div>
             <br>
         </div>
         <pre>function onMIDIInit( midi ) {
   var list=midi.inputs();
 
-  if (list.length) {
-    for (var i=0; i&lt;list.length; i++) {
-      var midiIn = list[ i ];
-      midiIn.onmidimessage = midiMessageReceived;
-    }
-  }
+  for (var i=0; i&lt;list.length; i++)
+    list[ i ].onmidimessage = midiMessageReceived;
 }</pre>
+    </section>
+
+    <section>
+        <h2>Enumerating MIDI input devices</h2>
+        <h3>(New style! Use this!)</h3>
+        <div>
+            <br>
+        </div>
+        <pre>function onMIDIInit( midi ) {
+  for (var input of midiAccess.inputs.values())
+    input.onmidimessage = midiMessageReceived;
+}
+
+
+</pre>
     </section>
 
     <section>
@@ -180,33 +209,50 @@
     </section>
 
     <section>
-        <h2>Web MIDI</h2>
+        <h2>Web MIDI support</h2>
         <div>Implemented in Chrome under flag #enable-web-midi</div>
         <div>Works on Android Chrome with USB OTG! </div>
+        <div>Firefox working on it (low priority)</div>
     </section>
 
     <section>
-        <h2>App Opportunities</h2>
+        <h2>Other Demos</h2>
+        <ul>
+        <li>Look for (m) demos at <a href="http://webaudiodemos.appspot.com/">webaudiodemos.appspot.com</a>.</li>
+        <li>The <a href="http://github.com/cwilso/WebMIDIAPIShim">WebMIDIAPIShim</a> Github repo has examples (old style!)</li>
+        <li>Yamaha's Web Music Platform OS project: <a href="yamaha-webmusic.github.io/webmusicplatform/app/">yamaha-webmusic.github.io/webmusicplatform/app/</a></li>
+        <li>Yamaha's NSX1 apps: <a href="yamaha-webmusic.github.io">yamaha-webmusic.github.io</a></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Future App Opportunities</h2>
         <div>
             <ul>
                 <li>
-                    <span style="text-align: center; letter-spacing: -0.02em;">Software synthesizers</span>
+                    <span style="text-align: center; letter-spacing: -0.02em;">Immersive gaming audio</span>
                 </li>
                 <li>
-                    <span style="letter-spacing: -0.02em; text-align: center;">DAWs</span>
-                    <br>
+                    <span style="text-align: center; letter-spacing: -0.02em;">Audio feedback and input in app UX</span>
                 </li>
                 <li>
-                    <span style="letter-spacing: -0.02em; text-align: center;">DJ apps</span>
-                    <br>
-                </li>
-                <li>
-                    <span style="letter-spacing: -0.02em; text-align: center;">Physical controllers for non-music apps</span>
+                    <span style="letter-spacing: -0.02em; text-align: center;">Music applications - from synthesis to DAW&nbsp;</span>
                     <br>
                 </li>
             </ul>
         </div>
     </section>
+
+
+    <section>
+        <h2>What I want from you:</h2>
+        <ul>
+        <li>Investigate/play around/build awesome stuff
+        <li>Tell us what's not there
+        <li>Help us prioritize to make the web platform awesome for audio apps!
+        </ul>
+    </section>
+
     <section>
         <h2>End</h2>
         <div>
@@ -221,7 +267,7 @@
         <div><a href="http://github.com/cwilso">github.com/cwilso</a></div>
         <div><a href="http://webaudiodemos.appspot.com/">webaudiodemos.appspot.com</a></div>
         <div>+Chris Wilson</div>
-        <div>These slides:<a href="http://webaudiodemos.appspot.com/slides/index.html">goo.gl/iCsRY</a></div>
+        <div>These slides:<a href="http://webaudiodemos.appspot.com/slides/webmidi.html">goo.gl/5hESV7</a></div>
     </section>
 			</div>
 
