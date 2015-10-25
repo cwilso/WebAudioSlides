@@ -381,6 +381,15 @@ mySoundNode.start(0);</pre>
     </section>
 
     <section>
+        <h2>Don't forget hot-plugging MIDI devices!</h2>
+        <div>
+            <br>
+        </div>
+        <pre>midiAccess.onstatechange = 
+    function midiConnectionStateChange( e ) { populateMIDIInSelect() };</pre>
+    </section>
+
+    <section>
         <h2>MIDI Message syntax</h2>
         <div><br></div>
         <div>MIDI has 16 virtual channels, blah blah blah.</div>
