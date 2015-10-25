@@ -50,6 +50,8 @@
         </h3>
         <h6>Google Chrome Developer Advocate</h6>
     </section>
+
+<!-- basics begin -->
     <section>
         <h2>Why another audio API?</h2>
         <h3>We have &lt;audio&gt; already!</h3>
@@ -98,6 +100,8 @@
         </div>
     </section>
 
+<!-- basics end -->
+
     <section>
         <h2>DEMO</h2>
         <div>
@@ -114,8 +118,9 @@
         <div>
             <ul>
                 <li>Gaming</li>
-                <li>App UX feedback</li>
+                <li>Application UI feedback</li>
                 <li>Musical applications</li>
+                <li>Audio education</li>
                 <li>Audio processing</li>
             </ul>
         </div>
@@ -133,10 +138,6 @@
                 <li>Call <code><font color="#0099cc">start()</font></code>!</li>
 		    </ul>
 		</div>
-        <div>
-            <br>
-        </div>
-        <div style="text-align: center;">Simple buffer <a target="_grits" href="http://gritsgame.appspot.com/">playing and sound management</a> is easy!</div>
 	</section>
 
     <section>
@@ -144,8 +145,7 @@
         <div>
             <br>
         </div>
-        <pre>var myBuffer = null;
-var context = new AudioContext(); // webkit prefix alert!
+        <pre>var myBuffer = null, context = new AudioContext();
 
 function loadDogSound(url) {
     var request = new XMLHttpRequest();
@@ -156,6 +156,7 @@ function loadDogSound(url) {
         function(buffer) { myBuffer = buffer;  } ); }
     request.send();
 }
+
 function playSound( buffer ) {
     var sourceNode = audioContext.createBufferSource();
     sourceNode.buffer = myBuffer;
@@ -269,53 +270,21 @@ mySoundNode.start(0);</pre>
 		<div>
 		    <ul>
 		        <li>Biquad Filtering - lowpass, hipass, etc.</li>
-		        <li>Delay</li>
+                <li>Delays and delay effects</li>
+                <li>Waveform synthesis: oscillators</li>
+                <li>Envelopes</li>
+                <li>Offline processing</li>
 		        <li>Compression</li>
 		        <li>Convolution</li>
 		        <li>Waveshaping</li>
 		        <li>Positioning/Panning/Doppler</li>
-                <li>Custom Javascript processing*</li>
+                <li>Custom Javascript processing</li>
 		    </ul>
 		</div>
 	</section>
 
 	<section>
-	    <h2>Advanced Game Audio...</h2>
-	    <div>
-	        <br>
-	    </div>
-	    <div>...would of course need these things</div>
-	    <div>
-	        <br>
-	    </div>
-	    <div>(although Angry Birds might not)</div>
-	</section>
-
-	<section>
-	    <h2>&lt;audio&gt; Integration</h2>
-	    <div>Web Audio can also process &lt;audio&gt; streams <br>(and WebRTC, too!)</div>
-	</section>
-
-	<section>
 	    <h2>Audio for Music Applications</h2>
-	    <div>
-	        <br>
-	    </div>
-	    <div>
-	        <ul>
-	            <li>Filtering</li>
-	            <li>Compression</li>
-	            <li>Audio input</li>
-	            <li>Delays and delay effects</li>
-	            <li>Waveform synthesis: oscillators</li>
-	            <li>Envelopes</li>
-	            <li>Offline processing</li>
-	        </ul>
-	    </div>
-	</section>
-
-	<section>
-	    <h2>Advanced Effects...</h2>
 	    <div>Most "musical effects" are more complex than <br>just a single filter or delay.</div>
         <div>
             <br>
@@ -333,9 +302,14 @@ mySoundNode.start(0);</pre>
         </div>
     </section>
 
+    <section>
+        <h2>&lt;audio&gt; Integration</h2>
+        <div>Web Audio can also process &lt;audio&gt; streams <br>(and WebRTC, too!)</div>
+    </section>
+
 	<section>
 	    <h2>Audio Input</h2>
-	    <div>Now we can get input too!</div>
+	    <div>Access to audio input devices too!</div>
 	    <div>
 	        <br>
 	    </div>
@@ -344,18 +318,11 @@ mySoundNode.start(0);</pre>
 	            <li><a target="_record" href="../AudioRecorder/index.html">Recording</a></li>
 	            <li>Input-driven UX</li>
 	            <li><a target="_tuning" href="../pitchdetect/index.html">Instrument tuning</a></li>
+                <li><a target="_tuning" href="https://aerotwist.com/blog/guitar-tuner/">Paul Lewis' Guitar Tuner</a></li>
 	            <li>Analysis</li>
 	        </ul>
 	    </div>
 	</section>
-
-    <section>
-        <h2>What's NOT there (yet) for web audio</h2>
-        <ul>
-        <li>Any kind of plugin/VSTi hooks
-        <li>Multi-interface hooks<br>(multi-channel, yes; multi-device, no.)
-        </ul>
-    </section>
 
     <section>
         <h2>DEMO</h2>
@@ -368,7 +335,7 @@ mySoundNode.start(0);</pre>
             <br>
         </div>
         <div>Web MIDI : <a href="http://webaudio.github.io/web-midi-api/">webaudio.github.io/web-midi-api/</a></div>
-        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - Only implemented in Chrome under flag, but I wrote a cross-browser plugin-based <a href="http://github.com/cwilso/WebMIDIAPIShim/">prollyfill.</a></div>
+        <div><a href="http://webaudio.github.com/WebMIDI">Developing standard</a> - Shipping in Chrome, Firefox developing implementation, and I wrote a cross-browser plugin-based <a href="http://github.com/cwilso/WebMIDIAPIShim/">polyfill.</a></div>
     </section>
     <section>
         <h2>Web MIDI</h2>
@@ -403,22 +370,6 @@ mySoundNode.start(0);</pre>
 
     <section>
         <h2>Enumerating MIDI output devices</h2>
-        <h3>(old style! Soon to stop working!)</h3>
-        <div>
-            <br>
-        </div>
-        <pre>function onMIDIInit( midi ) {
-  var list=midi.outputs();
-
-  for (var i=0; i&lt;list.length; i++) {
-    list[i].send( [0x90, 3, 32] );
-  }
-}</pre>
-    </section>
-
-    <section>
-        <h2>Enumerating MIDI output devices</h2>
-        <h3>(New style! Use this!)</h3>
         <div>
             <br>
         </div>
@@ -426,9 +377,6 @@ mySoundNode.start(0);</pre>
   for (var input of midiAccess.outputs.values())
     input.send( [0x90, 3, 32] );
 }
-
-
-
 </pre>
     </section>
 
@@ -447,21 +395,6 @@ mySoundNode.start(0);</pre>
 
     <section>
         <h2>Enumerating MIDI input devices</h2>
-        <h3>(Old style! Soon to stop working!)</h3>
-        <div>
-            <br>
-        </div>
-        <pre>function onMIDIInit( midi ) {
-  var list=midi.inputs();
-
-  for (var i=0; i&lt;list.length; i++)
-    list[ i ].onmidimessage = midiMessageReceived;
-}</pre>
-    </section>
-
-    <section>
-        <h2>Enumerating MIDI input devices</h2>
-        <h3>(New style! Use this!)</h3>
         <div>
             <br>
         </div>
@@ -469,8 +402,6 @@ mySoundNode.start(0);</pre>
   for (var input of midiAccess.inputs.values())
     input.onmidimessage = midiMessageReceived;
 }
-
-
 </pre>
     </section>
 
@@ -507,16 +438,30 @@ mySoundNode.start(0);</pre>
     </section>
 
     <section>
+        <h2>The Incredible Thing about Web MIDI</h2>
+        <div>ZERO-FRICTION <a target="_organ" href="http://www.farfisaofthefuture.com/">controller</a> and device access!
+    </section>
+
+    <section>
+        <h2><a href="http://yamahasynth.com">Yamaha's Reface series</a></h2>
+        <img src="reface.jpg">
+    </section>
+
+    <section>
+        <h2><a href="http://peavey.com/products/vypyr/">Peavey's VYPYR series of guitar amps</a></h2>
+        <img src="vyper2.jpg">
+    </section>
+
+    <section>
         <h2>Web MIDI support</h2>
-        <div>Implemented in Chrome under flag #enable-web-midi</div>
+        <div>Shipping in Chrome</div>
         <div>Works on Android Chrome with USB OTG! </div>
-        <div>Firefox has expressed interest</div>
+        <div>Firefox is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=836897">actively working on it</a>.</div>
     </section>
 
     <section>
         <h2>Web Audio Support on Desktop</h2>
-        <div>Chrome, Safari, Firefox</div>
-        <div><a href="http://status.modern.ie/webaudioapi">IE is implementing!!</a></div>
+        <div>Chrome, Safari, Firefox, Edge</div>
     </section>
 
     <section>
@@ -527,8 +472,45 @@ mySoundNode.start(0);</pre>
     </section>
 
     <section>
+        <h2>Future App Opportunities</h2>
+        <div>
+            <ul>
+                <li>Immersive gaming audio</li>
+                <li>Audio feedback and input in app UX</li>
+                <li>Audio education - <a target="_new" href="http://outputchannel.com/post/tr-808-cowbell-web-audio/">explore techniques</a>, share with others
+                </li>
+                <li><span style="color:orange">Super-low-friction music applications - synthesis to DAW</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>What's NOT there (yet) for web audio</h2>
+        <ul>
+        <li>Any kind of plugin/VSTi hooks
+        <li>Multi-interface hooks<br>(multi-channel, partly; multi-device, no.)
+        </ul>
+    </section>
+
+    <section>
+        <h2> Next Things for Web Audio &amp; Web MIDI</h2>
+        <div>
+            <ul>
+                <li>Audio Workers (processing audio in JS)</li>
+                <li>Figuring out device access and selection</li>
+                <li>latency alignment</li>
+                <li>Finalizing v1</li>
+                <li>Low-level access to audio stream and resampling</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
         <h2>Other Demos</h2>
         <ul>
+        <li>Immersive, low-friction MIDI: <a target="_midispace" href="http://midi.space/">midi.space/</a>
+        <li>Farfisa Organ: <a href="http://www.farfisaofthefuture.com/">http://www.farfisaofthefuture.com/</a>
         <li>Soundtrap (DAW): <a href="https://www.soundtrap.com/">https://www.soundtrap.com/</a>
         <li>Audio Looper: <a target="_looperjs" href="https://github.com/lautr3k/Looper.js">https://github.com/lautr3k/Looper.js</a>
         <li>Yamaha's Web Music Platform OS project: <a href="yamaha-webmusic.github.io/webmusicplatform/app/">yamaha-webmusic.github.io/webmusicplatform/app/</a>
@@ -540,31 +522,20 @@ mySoundNode.start(0);</pre>
         </ul>
     </section>
 
-    <section>
-        <h2>Future App Opportunities</h2>
-        <div>
-            <ul>
-                <li>
-                    <span style="text-align: center; letter-spacing: -0.02em;">Immersive gaming audio</span>
-                </li>
-                <li>
-                    <span style="text-align: center; letter-spacing: -0.02em;">Audio feedback and input in app UX</span>
-                </li>
-                <li>
-                    <span style="letter-spacing: -0.02em; text-align: center;">Music applications - from synthesis to DAW&nbsp;</span>
-                    <br>
-                </li>
-            </ul>
-        </div>
-    </section>
 
+<section>
+    <h2>Web Audio Weekly</h2>
+    <div>If you're not already reading Chris Lowis' Web Audio Weekly, you should.</div>
+    <div><a href="tinyletter.com/webaudioweekly">tinyletter.com/webaudioweekly</a></div>
+</section>
 
 <section>
         <h2>What I want from you:</h2>
         <ul>
-        <li>Investigate/play around/build awesome stuff
+        <li>More developers to explore Web Audio and Web MIDI
         <li>Tell us what's not there
         <li>Help us prioritize to make the web platform awesome for audio apps!
+        <li>Explore audio techniques and share with others
         </ul>
         </section>
 
